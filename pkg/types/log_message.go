@@ -4,7 +4,7 @@ import "time"
 
 //easyjson:json
 type LogContent struct {
-	RemoteAddr    string `json:"remote_addr"`
+	RemoteAddr    string `json:"remote_addr"` // user ip addr
 	Request       string `json:"request"`
 	HTTPStatus    int    `json:"status"`
 	HTTPReferer   string `json:"http_referrer"`
@@ -14,6 +14,6 @@ type LogContent struct {
 //easyjson:json
 type LogMessage struct {
 	LogContent
-	RemoteHost string
+	RemoteHost string // hostname which handled user request
 	Timestamp  time.Time
 }

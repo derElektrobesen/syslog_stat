@@ -12,8 +12,8 @@ import (
 )
 
 type Config struct {
-	ListenHostPort string
-	NRoutines      int
+	ListenAddr string // UDP only
+	NRoutines  int
 }
 
 type Server struct {
@@ -41,8 +41,8 @@ func (s *Server) Run(handler Handler) error {
 		return fmt.Errorf("bad number of routines: %d", s.cfg.NRoutines)
 	}
 
-	if err := server.ListenUDP(s.cfg.ListenHostPort); err != nil {
-		return fmt.Errorf("unable to listen %s: %w", s.cfg.ListenHostPort, err)
+	if err := server.ListenUDP(s.cfg.ListenAddr); err != nil {
+		return fmt.Errorf("unable to listen %s: %w", s.cfg.ListenAddr, err)
 	}
 
 	if err := server.Boot(); err != nil {
