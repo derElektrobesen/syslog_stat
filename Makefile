@@ -14,7 +14,7 @@ vendor:
 generate: bin/easyjson $(EASYJSON_FILES:.go=_easyjson.go)
 
 bin/syslog_stat: generate
-	go build -o syslog_stat main.go
+	go build -o $@ main.go
 
 bin/easyjson:
 	go build -o bin/easyjson github.com/mailru/easyjson/easyjson

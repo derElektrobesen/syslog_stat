@@ -1,56 +1,28 @@
 package main
 
 import (
-	"encoding/json"
 	"log"
-	"time"
+	"os"
 
 	_ "github.com/derElektrobesen/syslog_stat/pkg/deps"
+	"github.com/derElektrobesen/syslog_stat/pkg/syslogsrv"
 	"github.com/derElektrobesen/syslog_stat/pkg/types"
-	"gopkg.in/mcuadros/go-syslog.v2"
+	"github.com/rs/zerolog"
 )
 
 func main() {
-	channel := make(syslog.LogPartsChannel)
-	handler := syslog.NewChannelHandler(channel)
+	lg := newLogger()
 
-	server := syslog.NewServer()
-	server.SetFormat(syslog.RFC3164)
-	server.SetHandler(handler)
+	s := syslogsrv.NewServer(lg, syslogsrv.Config{
+		ListenHostPort: "0.0.0.0:8888",
+		NRoutines:      1,
+	})
 
-	listenHostPort := "0.0.0.0:8888"
+	s.Run(handleLogMessage)
+}
 
-	if err := server.ListenUDP(listenHostPort); err != nil {
-		log.Println("Unable to listen %s: %s", listenHostPort, err)
-		return
-	}
-
-	if err := server.Boot(); err != nil {
-		log.Println("Unable to boot: %s", err)
-		return
-	}
-
-	go func(channel syslog.LogPartsChannel) {
-		for logParts := range channel {
-			msg := types.LogMessage{
-				RemoteHost: logParts["hostname"].(string),
-				Timestamp:  logParts["timestamp"].(time.Time),
-			}
-
-			content := logParts["content"].(string)
-			err := json.Unmarshal([]byte(content), &msg.LogContent)
-			if err != nil {
-				log.Println("unable to unmarshal content %s: %s", content, err)
-				continue
-			}
-
-			handleLogMessage(msg)
-		}
-	}(channel)
-
-	log.Println("Starting server")
-
-	server.Wait()
+func newLogger() zerolog.Logger {
+	return zerolog.New(os.Stderr).With().Timestamp().Logger()
 }
 
 func handleLogMessage(msg types.LogMessage) {

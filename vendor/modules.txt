@@ -10,6 +10,11 @@ github.com/mailru/easyjson/gen
 github.com/mailru/easyjson/jlexer
 github.com/mailru/easyjson/jwriter
 github.com/mailru/easyjson/parser
+# github.com/rs/zerolog v1.26.1
+## explicit
+github.com/rs/zerolog
+github.com/rs/zerolog/internal/cbor
+github.com/rs/zerolog/internal/json
 # gopkg.in/mcuadros/go-syslog.v2 v2.3.0
 ## explicit
 gopkg.in/mcuadros/go-syslog.v2
